@@ -1,6 +1,7 @@
 package com.heroslender.updater;
 
 
+import com.heroslender.updater.impl.GithubUpdateChecker;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public interface UpdateChecker {
      * @throws IOException                                                 if an I/O exception occurs.
      */
     @NotNull
-    String fetchLatest(@NotNull String owner, @NotNull String repo) throws IOException;
+    ReleaseData fetchLatest(@NotNull String owner, @NotNull String repo) throws IOException;
 
     /**
      * Compares two versions.

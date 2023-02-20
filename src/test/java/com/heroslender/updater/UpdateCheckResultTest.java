@@ -10,7 +10,8 @@ public class UpdateCheckResultTest {
     public void testOutdated() {
         UpdateCheckResult result = new UpdateCheckResult(
                 Version.fromString("1.0.0"),
-                Version.fromString("1.0.1")
+                Version.fromString("1.0.1"),
+                null
         );
 
         assertEquals(UpdateCheckResult.Status.OUTDATED, result.getStatus());
@@ -20,7 +21,8 @@ public class UpdateCheckResultTest {
     public void testUpdated() {
         UpdateCheckResult result = new UpdateCheckResult(
                 Version.fromString("1.0.0"),
-                Version.fromString("1.0.0")
+                Version.fromString("1.0.0"),
+                null
         );
 
         assertEquals(UpdateCheckResult.Status.UPDATED, result.getStatus());
@@ -30,7 +32,8 @@ public class UpdateCheckResultTest {
     public void testAhead() {
         UpdateCheckResult result = new UpdateCheckResult(
                 Version.fromString("1.1.0"),
-                Version.fromString("1.0.0")
+                Version.fromString("1.0.0"),
+                null
         );
 
         assertEquals(UpdateCheckResult.Status.RUNNING_AHEAD, result.getStatus());

@@ -2,11 +2,13 @@ package com.heroslender.updater;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Data
 public class UpdateCheckResult {
     @NotNull private final Version currentVersion;
     @NotNull private final Version remoteVersion;
+    @Nullable private final String downloadUrl;
 
     public Status getStatus() {
         if (currentVersion.isLowerThan(remoteVersion)) {
