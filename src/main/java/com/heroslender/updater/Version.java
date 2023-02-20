@@ -40,15 +40,6 @@ public class Version implements Comparable<Version> {
         return new Version(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)), "-SNAPSHOT".equals(matcher.group(4)));
     }
 
-    public static void main(String[] args) {
-        fromString("1.2.3");
-        fromString("v1.2.3");
-        fromString("1.12.3");
-        fromString("v1.12.3");
-        fromString("1.21.3-SNAPSHOT");
-        fromString("v1.12.3-RELEASE");
-    }
-
     public boolean isHigherThan(Version o) {
         return compareTo(o) > 0;
     }

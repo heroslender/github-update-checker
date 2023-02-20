@@ -3,6 +3,8 @@ package com.heroslender.updater;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public interface UpdateChecker {
 
     /**
@@ -12,9 +14,10 @@ public interface UpdateChecker {
      * @param repo  The repository ID
      * @return The latest version
      * @throws com.heroslender.updater.exceptions.NoVersionsFoundException if there are no versions available
+     * @throws IOException                                                 if an I/O exception occurs.
      */
     @NotNull
-    String fetchLatest(@NotNull String owner, @NotNull String repo);
+    String fetchLatest(@NotNull String owner, @NotNull String repo) throws IOException;
 
     /**
      * Compares two versions.
@@ -35,7 +38,8 @@ public interface UpdateChecker {
      * @param repoId         The repository ID
      * @return the comparison result
      * @throws com.heroslender.updater.exceptions.NoVersionsFoundException if there are no versions available
+     * @throws IOException                                                 if an I/O exception occurs.
      */
     @NotNull
-    UpdateCheckResult checkVersion(@NotNull String currentVersion, @NotNull String repoOwner, @NotNull String repoId);
+    UpdateCheckResult checkVersion(@NotNull String currentVersion, @NotNull String repoOwner, @NotNull String repoId) throws IOException;
 }
