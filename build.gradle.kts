@@ -23,7 +23,7 @@ dependencies {
 }
 
 group = "com.heroslender"
-version = "1.4.0"
+version = "1.0.0"
 
 java {
     withJavadocJar()
