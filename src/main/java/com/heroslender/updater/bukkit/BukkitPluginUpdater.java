@@ -34,7 +34,7 @@ public class BukkitPluginUpdater implements Listener {
         this.repoOwner = repoOwner;
         this.repoName = repoName;
 
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+        Bukkit.getPluginManager().registerEvents(new UpdaterListener(), plugin);
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             try {
                 updateCheckResult = GithubUpdateChecker.getInstance().checkVersion(
@@ -42,6 +42,10 @@ public class BukkitPluginUpdater implements Listener {
                         repoOwner,
                         repoName
                 );
+
+                if (updateCheckResult.getStatus() == UpdateCheckResult.Status.OUTDATED) {
+                    sendOutdatedMessage(Bukkit.getConsoleSender(), updateCheckResult);
+                }
             } catch (Exception e) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to check for plugin updates", e);
             }
@@ -56,24 +60,6 @@ public class BukkitPluginUpdater implements Listener {
         this(plugin, plugin.getDescription().getAuthors().get(0), plugin.getDescription().getName());
     }
 
-    @EventHandler
-    private void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        if (!player.hasPermission("updatechecker.admin")) {
-            return;
-        }
-
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-            if (!player.isOnline()) {
-                return;
-            }
-
-            if (updateCheckResult.getStatus() == UpdateCheckResult.Status.OUTDATED) {
-                sendOutdatedMessage(player, updateCheckResult);
-            }
-        }, 20L);
-    }
-
     public void sendOutdatedMessage(Player player, UpdateCheckResult updateCheckResult) {
         player.sendMessage(GREEN + "Está disponivel uma nova versão do plugin " +
                 GRAY + plugin.getDescription().getName() + GREEN + "!");
@@ -84,7 +70,7 @@ public class BukkitPluginUpdater implements Listener {
                 .event(new ClickEvent(ClickEvent.Action.OPEN_URL, String.format(GITHUB_LATEST_RELEASE_URL, repoOwner, repoName)))
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Clique para ver as alterações").create()))
                 .append(" | ").color(ChatColor.DARK_GRAY)
-                .append("[Transferir]")
+                .append("[Transferir]").color(ChatColor.BLUE)
                 .event(new ClickEvent(ClickEvent.Action.OPEN_URL, updateCheckResult.getDownloadUrl()))
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Clique para transferir").create()))
                 .create();
@@ -99,5 +85,26 @@ public class BukkitPluginUpdater implements Listener {
         plugin.getLogger().info("Changelog: " + String.format(GITHUB_LATEST_RELEASE_URL, repoOwner, repoName));
         plugin.getLogger().info("Download: " + updateCheckResult.getDownloadUrl());
         plugin.getLogger().info(" ");
+    }
+
+    private final class UpdaterListener implements Listener {
+
+        @EventHandler
+        private void onJoin(PlayerJoinEvent event) {
+            Player player = event.getPlayer();
+            if (!player.hasPermission("updatechecker.admin")) {
+                return;
+            }
+
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
+
+                if (updateCheckResult.getStatus() == UpdateCheckResult.Status.OUTDATED) {
+                    sendOutdatedMessage(player, updateCheckResult);
+                }
+            }, 20L);
+        }
     }
 }
